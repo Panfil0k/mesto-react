@@ -1,6 +1,7 @@
 class Api {
-  constructor(baseUrl) {
+  constructor(baseUrl, token) {
     this._baseUrl = baseUrl;
+    this._token = token
   }
 
   _returnRes(res) { 
@@ -11,9 +12,9 @@ class Api {
   }
 
   getUserInfo() {
-    return fetch(`${this._baseUrl}/v1/cohort-49/users/me`, {
+    return fetch(`${this._baseUrl}/users/me`, {
       headers: {
-        authorization: '3723867b-28da-4cb2-8322-b6fad88ad8e4',
+        authorization: this._token,
         'Content-Type': 'application/json'
       }
     })
@@ -21,9 +22,9 @@ class Api {
   }
 
   getCards() {
-    return fetch(`${this._baseUrl}/v1/cohort-49/cards`, {
+    return fetch(`${this._baseUrl}/cards`, {
       headers: {
-        authorization: '3723867b-28da-4cb2-8322-b6fad88ad8e4',
+        authorization: this._token,
         'Content-Type': 'application/json'
       }
     })
@@ -38,14 +39,14 @@ class Api {
 }
 
   setUserInfo(dataUser) {
-    return fetch(`${this._baseUrl}/v1/cohort-49/users/me`, {
+    return fetch(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
       body: JSON.stringify({
         name: dataUser.name,
         about: dataUser.job
       }),
       headers: {
-        authorization: '3723867b-28da-4cb2-8322-b6fad88ad8e4',
+        authorization: this._token,
         'Content-Type': 'application/json'
       }
     })
@@ -53,13 +54,13 @@ class Api {
   }
 
   setUserAvatar(dataUser) {
-    return fetch(`${this._baseUrl}/v1/cohort-49/users/me/avatar`, {
+    return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
       body: JSON.stringify({
         avatar: dataUser.avatarSrc
       }),
       headers: {
-        authorization: '3723867b-28da-4cb2-8322-b6fad88ad8e4',
+        authorization: this._token,
         'Content-Type': 'application/json'
       }
     })
@@ -67,14 +68,14 @@ class Api {
   }
 
   generateCard(data) {
-    return fetch(`${this._baseUrl}/v1/cohort-49/cards`, {
+    return fetch(`${this._baseUrl}/cards`, {
       method: 'POST',
       body: JSON.stringify({
         name: data.cardName,
         link: data.cardSrc
       }),
       headers: {
-        authorization: '3723867b-28da-4cb2-8322-b6fad88ad8e4',
+        authorization: this._token,
         'Content-Type': 'application/json'
       }
     })
@@ -82,10 +83,10 @@ class Api {
   }
 
   deleteCard(cardId) {
-    return fetch(`${this._baseUrl}/v1/cohort-49/cards/${cardId}`, {
+    return fetch(`${this._baseUrl}/cards/${cardId}`, {
       method: 'DELETE',
       headers: {
-        authorization: '3723867b-28da-4cb2-8322-b6fad88ad8e4',
+        authorization: this._token,
         'Content-Type': 'application/json'
       }
     })
@@ -93,10 +94,10 @@ class Api {
   }
 
   setLikeCard(cardId) {
-    return fetch(`${this._baseUrl}/v1/cohort-49/cards/${cardId}/likes`, {
+    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: 'PUT',
       headers: {
-        authorization: '3723867b-28da-4cb2-8322-b6fad88ad8e4',
+        authorization: this._token,
         'Content-Type': 'application/json'
       }
     })
@@ -104,10 +105,10 @@ class Api {
   }
 
   deleteLikeCard(cardId) {
-    return fetch(`${this._baseUrl}/v1/cohort-49/cards/${cardId}/likes`, {
+    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: 'DELETE',
       headers: {
-        authorization: '3723867b-28da-4cb2-8322-b6fad88ad8e4',
+        authorization: this._token,
         'Content-Type': 'application/json'
       }
     })
@@ -115,7 +116,7 @@ class Api {
   }
 }
 
-const api = new Api('https://mesto.nomoreparties.co');
+const api = new Api('https://mesto.nomoreparties.co/v1/cohort-49', '3723867b-28da-4cb2-8322-b6fad88ad8e4');
 
 export default api;
 
