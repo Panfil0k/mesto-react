@@ -17,6 +17,8 @@ function App() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard;
 
   useEffect(() => {
     api.getUserInfo()
@@ -54,11 +56,26 @@ function App() {
     setSelectedCard(null);
   }
 
+  useEffect(() => {
+    function closeByEscape(evt) {
+      if(evt.key === 'Escape') {
+        closeAllPopups();
+      }
+    }
+    if(isOpen) {
+      document.addEventListener('keydown', closeByEscape);
+      return () => {
+        document.removeEventListener('keydown', closeByEscape);
+      }
+    }
+  }, [isOpen])
+
   function handleCardClick(e) {
     setSelectedCard(e);
   }
 
   function handleUpdateUser(e) {
+    setIsLoading(true);
     api.setUserInfo(e)
     .then((res) => {
       setCurrentUser(res);
@@ -67,17 +84,20 @@ function App() {
     .catch((err) => {
       console.log(`Ошибка: ${err}`);
     })
+    .finally(() => setIsLoading(false))
   }
 
   function handleUpdateAvatar(e) {
+    setIsLoading(true);
     api.setUserAvatar(e.avatar.value)
-    .then((res) => {
+    .then((res) => { 
       setCurrentUser(res);
       closeAllPopups();
     })
     .catch((err) => {
       console.log(`Ошибка: ${err}`);
     })
+    
   }
 
   function handleCardLike(card) {
@@ -113,6 +133,7 @@ function App() {
   }
 
   function handleAddPlaceSubmit(e) {
+    setIsLoading(true);
     api.generateCard(e)
     .then((newCard) => {
       setCards([newCard, ...cards]);
@@ -121,6 +142,7 @@ function App() {
     .catch((err) => {
       console.log(`Ошибка: ${err}`);
     })
+    .finally(() => setIsLoading(false))
   }
 
   return (
@@ -139,9 +161,9 @@ function App() {
           />
           <Footer />
         </div>
-        <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
-        <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} /> 
-        <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
+        <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} isLoading={isLoading} />
+        <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} isLoading={isLoading} /> 
+        <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} isLoading={isLoading} />
         <PopupWithForm title="Вы уверены?" name="confirm" />
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
       </CurrentUserContext.Provider>

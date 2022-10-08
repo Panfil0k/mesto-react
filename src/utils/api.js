@@ -1,7 +1,7 @@
 class Api {
-  constructor(baseUrl, token) {
+  constructor({ baseUrl, headers }) {
     this._baseUrl = baseUrl;
-    this._token = token
+    this._headers = headers
   }
 
   _returnRes(res) { 
@@ -11,112 +11,83 @@ class Api {
     return Promise.reject(res.status);
   }
 
+  _request(url, options) {
+    return fetch(url, options).then(this._returnRes)
+  }
+
   getUserInfo() {
-    return fetch(`${this._baseUrl}/users/me`, {
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      }
+    return this._request(`${this._baseUrl}/users/me`, {
+      headers: this._headers
     })
-    .then(this._returnRes)
   }
 
   getCards() {
-    return fetch(`${this._baseUrl}/cards`, {
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      }
+    return this._request(`${this._baseUrl}/cards`, {
+      headers: this._headers
     })
-    .then(this._returnRes)
   }
 
-  getCardsAndUserInfo() {
-    return Promise.all([
-      this._getUserInfo(),
-      this._getCards()
-    ])
-}
-
   setUserInfo(dataUser) {
-    return fetch(`${this._baseUrl}/users/me`, {
+    return this._request(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
       body: JSON.stringify({
         name: dataUser.name,
         about: dataUser.about
       }),
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      }
+      headers: this._headers
     })
-    .then(this._returnRes)
   }
 
   setUserAvatar(dataUser) {
-    return fetch(`${this._baseUrl}/users/me/avatar`, {
+    return this._request(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
       body: JSON.stringify({
         avatar: dataUser
       }),
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      }
+      headers: this._headers
     })
-    .then(this._returnRes)
   }
 
   generateCard(data) {
-    return fetch(`${this._baseUrl}/cards`, {
+    return this._request(`${this._baseUrl}/cards`, {
       method: 'POST',
       body: JSON.stringify({
         name: data.name,
         link: data.link
       }),
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      }
+      headers: this._headers
     })
-    .then(this._returnRes)
   }
 
   deleteCard(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}`, {
+    return this._request(`${this._baseUrl}/cards/${cardId}`, {
       method: 'DELETE',
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      }
+      headers: this._headers
     })
-    .then(this._returnRes)
   }
 
   setLikeCard(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+    return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: 'PUT',
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      }
+      headers: this._headers
     })
-    .then(this._returnRes)
   }
 
   deleteLikeCard(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+    return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: 'DELETE',
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      }
+      headers: this._headers
     })
-    .then(this._returnRes)
   }
 }
 
-const api = new Api('https://mesto.nomoreparties.co/v1/cohort-49', '3723867b-28da-4cb2-8322-b6fad88ad8e4');
+const api = new Api({
+  baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-49',
+  headers: {
+    authorization: '3723867b-28da-4cb2-8322-b6fad88ad8e4',
+    'Content-Type': 'application/json'
+  }
+});
 
 export default api;
 

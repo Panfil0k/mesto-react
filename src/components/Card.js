@@ -27,8 +27,8 @@ function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   }
 
   return (
-    <div className="places__item" key={card._id}>
-      <img className="places__foto" src={card.link} onClick={handleClick}/>
+    <div className="places__item">
+      <img className="places__foto" src={card.link} alt={card.name} onClick={handleClick}/>
       <h2 className="places__name">{card.name}</h2>
       <button className={cardLikeButtonClassName} type="button" onClick={handleLikeClick}></button>
       <span className="places__counter-like">{card.likes.length}</span>
