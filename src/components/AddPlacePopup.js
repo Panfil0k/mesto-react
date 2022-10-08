@@ -15,7 +15,10 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, isLoading }) {
   }
 
   React.useEffect(() => {
-    setValues({[values.cardName]: '', [values.cardUrl]: ''})
+    setValues({
+      cardName: '',
+      cardUrl: ''
+    })
   }, [isOpen]);
 
   return (

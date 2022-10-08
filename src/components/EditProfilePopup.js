@@ -1,31 +1,25 @@
 import React from 'react';
 import PopupWithForm from './PopupWithForm';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import { useForm } from "../hooks/useForm";
 
 function EditProfilePopup({ isOpen, onClose, onUpdateUser, isLoading }) {
   const currentUser = React.useContext(CurrentUserContext);
-  const [name, setName] = React.useState('');
-  const [description, setDescription] = React.useState('');
+  const {values, handleChange, setValues} = useForm({});
 
   React.useEffect(() => {
-    setName(currentUser.name);
-    setDescription(currentUser.about);
+    setValues({
+      profileName: currentUser.name, 
+      profileAbout: currentUser.about
+    });
   }, [currentUser, isOpen]);
     
-  function handleChangeName(e) {
-    setName(e.target.value);
-  }
-
-  function handleChangeDescription(e) {
-    setDescription(e.target.value);
-  }
-
   function handleSubmit(e) {
     e.preventDefault();
     
     onUpdateUser({
-      name,
-      about: description,
+      name: values.profileName,
+      about: values.profileAbout,
     });
   }
 
@@ -33,11 +27,11 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, isLoading }) {
     <PopupWithForm isOpen={isOpen} onClose={onClose} onSubmit={handleSubmit} title="Редактировать профиль" btnTitle={isLoading? 'Сохранение...' : 'Сохранить'} name="edit-profile">
       <fieldset className="edit-form__fieldset">
         <label className="edit-form__label">
-          <input className="edit-form__item edit-form__item_el_name" id="profile-name-input" type="text" name="name" placeholder="Имя" value={name || ''} onChange={handleChangeName}/>
+          <input className="edit-form__item edit-form__item_el_name" id="profile-name-input" type="text" name="profileName" placeholder="Имя" value={values.profileName || ''} onChange={handleChange}/>
           <span className="edit-form__input-error profile-name-input-error"></span>
         </label>
         <label className="edit-form__label">
-          <input className="edit-form__item edit-form__item_el_job" id="profile-job-input" type="text" name="job" placeholder="О себе" value={description || ''} onChange={handleChangeDescription}/>
+          <input className="edit-form__item edit-form__item_el_job" id="profile-job-input" type="text" name="profileAbout" placeholder="О себе" value={values.profileAbout || ''} onChange={handleChange}/>
           <span className="edit-form__input-error profile-job-input-error"></span>
         </label>
       </fieldset>
