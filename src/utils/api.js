@@ -43,7 +43,7 @@ class Api {
       method: 'PATCH',
       body: JSON.stringify({
         name: dataUser.name,
-        about: dataUser.job
+        about: dataUser.about
       }),
       headers: {
         authorization: this._token,
@@ -57,7 +57,7 @@ class Api {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
       body: JSON.stringify({
-        avatar: dataUser.avatarSrc
+        avatar: dataUser
       }),
       headers: {
         authorization: this._token,
@@ -71,8 +71,8 @@ class Api {
     return fetch(`${this._baseUrl}/cards`, {
       method: 'POST',
       body: JSON.stringify({
-        name: data.cardName,
-        link: data.cardSrc
+        name: data.name,
+        link: data.link
       }),
       headers: {
         authorization: this._token,
